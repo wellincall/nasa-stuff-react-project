@@ -42,8 +42,10 @@ class SearchResults extends Component {
     };
 
   // This determines the HTML to render and the card structure, mapping the images from the state onto each card
-    getResults = (images) => {
-      if (this.props.getResults.length > 0) {
+    getResults = () => {
+      if (this.props.loading) {
+        return <div> Loading results...</div>
+      } else if (this.props.getResults.length > 0) {
         return this.props.getResults.map(image =>
           <div className="cardborder">
             <div className="leftbox">
@@ -70,7 +72,9 @@ class SearchResults extends Component {
 
       //A function to help show a message when the search term returns no results
       noResults = () => {
-        return <div className="noresult">no results yet</div>
+        if (this.props.searchTerm) {
+          return <div className="noresult">no results for {this.props.searchTerm}</div>
+        }
       };
 
   //The Search field is rendered and the results are presented.

@@ -14,17 +14,21 @@ import MainContainer from './containers/MainContainer'
 export default class App extends Component {
 
   state = {
-    images: []
+    images: [],
+    loading: false,
+    searchTerm: "",
+    errorOnQuery: false
   }
 
 
 
 //The NASA API is called and then the results go to the state
   fetchImages = (query = "") => {
+    this.setState({ loading: true })
     $.ajax({
       url: `https://images-api.nasa.gov/search?q=${query}`
     }).then(json => {
-      this.setState({ images: json.collection.items })
+      this.setState({ images: json.collection.items, loading: false, searchTerm: query })
     })
   }
 
@@ -40,11 +44,18 @@ export default class App extends Component {
 
             <Route
              path="/search"
-             render={(props) => <SearchForm {...props} fetchImages={this.fetchImages} />}
+             render={(props) => <SearchForm {...props} fetchImages={this.fetchImages} searchTerm={this.state.searchTerm} />}
             />
             <Route
              path="/search"
-             render={(props) => <SearchResults {...props} getResults={this.state.images} />}
+             render={
+               (props) => 
+                 <SearchResults {...props} 
+                   getResults={this.state.images} 
+                   loading={this.state.loading} 
+                   searchTerm={this.state.searchTerm}
+                 />
+             }
             />
           </div>
         </BrowserRouter>
